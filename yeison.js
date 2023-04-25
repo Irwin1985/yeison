@@ -92,16 +92,35 @@ function _getNextToken() {
 
         // handle string token
         if (tokenType == 'STRING') {
-            
+            return _parseString();
         }
 
         return {
             type: tokenType,
-            value: tokenValue,
+            value: tokenValue
         };
     }
 
     throw new SyntaxError('Unexpected token: "' + string[0] + '" at line ' + _scannerLine + '.');
+}
+
+/**
+ * Parses a string token.
+ */
+function _parseString() {
+    var lexeme = '';
+    var ch = '';
+    while (true) {
+        ch = _scannerString[_scannerCursor++];
+        if (ch == '"') {
+            break;
+        }
+        lexeme += ch;
+    }
+    return {
+        type: 'STRING',
+        value: lexeme
+    }
 }
 
 /*
@@ -117,5 +136,5 @@ function _matchRegEx(regexp, string) {
 }
 
 // test the tokenizer
-var tokens = _scanTokens('{"name": "Yeison"}');
+var tokens = _scanTokens('{"name": "Yeison", "age": 25, "isMale": true, "address": {"city": "Bogota", "country": "Colombia"}, "salary": 1000.50, "skills": ["C#", "JavaScript", "SQL"]}');
 console.log(tokens);
